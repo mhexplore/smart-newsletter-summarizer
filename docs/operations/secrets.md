@@ -20,7 +20,11 @@ Never commit `.env`. Use this table as the canonical reference.
 
 ## GitHub Actions
 
-Copy the same names into **Repository secrets**. Optional **Variables**:
+GitHub Actions does **not** use `.env`. Secrets are injected as **environment variables** on the runner.
+
+Copy the same names into **Repository secrets** (Settings → Secrets and variables → **Actions** → **Repository secrets**). Names must match exactly: `OPENAI_API_KEY`, `TAVILY_API_KEY`.
+
+Optional **Variables**:
 
 - `NEWSLETTER_TOPIC`
 - `SEND_EMAIL`

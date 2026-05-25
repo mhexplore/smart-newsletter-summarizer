@@ -87,7 +87,9 @@ def search_news_tavily(
     key = api_key or os.getenv("TAVILY_API_KEY")
     if not key:
         raise ValueError(
-            "TAVILY_API_KEY is not set. Get a free key at https://tavily.com"
+            "TAVILY_API_KEY is not set. Set it in your environment or .env file "
+            "(local), or as a GitHub Actions repository secret (cloud). "
+            "Get a free key at https://tavily.com"
         )
 
     response = requests.post(

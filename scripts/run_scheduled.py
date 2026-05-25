@@ -8,17 +8,20 @@ import os
 import sys
 from pathlib import Path
 
-from dotenv import load_dotenv
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-load_dotenv(ROOT / ".env")
 
+from src.config.env import env_status, load_app_env, require_env_vars  # noqa: E402
 from src.crew.newsletter_crew import run_newsletter_crew  # noqa: E402
 from src.export.email_sender import send_newsletter_email  # noqa: E402
 
 
 def main() -> None:
+    load_app_env(ROOT)
+    status = env_status("OPENAI_API_KEY", "TAVILY_API_KEY", "NEWSLETTER_TOPIC")
+    print(f"Env check: {status}")
+    require_env_vars("OPENAI_API_KEY", "TAVILY_API_KEY", context="run_scheduled.py / CI")
+
     topic = os.getenv("NEWSLETTER_TOPIC", "latest developments in AI agents")
     send_email = os.getenv("SEND_EMAIL", "false").lower() in ("1", "true", "yes")
     dry_run = os.getenv("EMAIL_DRY_RUN", "false").lower() in ("1", "true", "yes")

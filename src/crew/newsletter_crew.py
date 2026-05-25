@@ -9,6 +9,7 @@ from pathlib import Path
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 
+from src.config.env import load_app_env, require_env_vars
 from src.tools.crew_tools import (
     rss_feed_reader,
     tavily_news_search,
@@ -106,10 +107,8 @@ def run_newsletter_crew(topic: str) -> str:
     Returns:
         Final newsletter Markdown string.
     """
-    if not os.getenv("OPENAI_API_KEY"):
-        raise EnvironmentError(
-            "OPENAI_API_KEY is not set. Add it to your .env file."
-        )
+    load_app_env(PROJECT_ROOT)
+    require_env_vars("OPENAI_API_KEY", context="NewsletterCrew / OpenAI")
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     os.chdir(PROJECT_ROOT)
