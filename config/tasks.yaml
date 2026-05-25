@@ -1,0 +1,43 @@
+scout_task:
+  description: >
+    Gather news for this request: {topic}
+
+    Instructions:
+    - If the request looks like a URL (starts with http), use the RSS Feed Reader tool.
+    - Otherwise, use the Tavily News Search tool with a focused query based on the topic.
+    - Collect at least 5 distinct, high-quality items when possible.
+    - Note the source title and link for each item.
+  expected_output: >
+    A structured bullet list of discovered articles. Each bullet must include:
+    title, source/link, and a one-sentence summary. No fabricated articles.
+
+fact_check_task:
+  description: >
+    Review the News Scout's report for topic: {topic}
+
+    Instructions:
+    1. Use "Verify All URLs In Text" on the full scout report.
+    2. For any FAILED or suspicious link, use "Verify Single URL" and Tavily News Search
+       to find a corroborating source or mark the item REJECTED.
+    3. Drop items with broken links and no corroboration.
+    4. Label each kept item: VERIFIED or CORROBORATED (with replacement link if swapped).
+  expected_output: >
+    A verified article list in Markdown:
+    - Summary table: total reviewed, verified, rejected
+    - Section "Approved for newsletter" with only trusted items (title, link, one-line summary)
+    - Section "Rejected" with reason per item (broken link, no corroboration, etc.)
+
+summarize_task:
+  description: >
+    Write the smart newsletter for "{topic}" using ONLY the Fact Checker's
+    "Approved for newsletter" section. Do not include rejected items.
+
+    Format:
+    1. Subject line (max 60 characters) — as first line: Subject line: ...
+    2. Opening hook (2 sentences)
+    3. Top stories (3–5 items, each with headline + 2-sentence blurb + link)
+    4. "Why it matters" section (3 bullet points)
+    5. One-line footer: what to watch next week
+  expected_output: >
+    A complete newsletter draft in Markdown, ready to email. Every story must
+    include its source link from the fact-check report.
